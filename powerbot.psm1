@@ -75,7 +75,7 @@ function Switch-Weapon
         [System.Uri]
         $BaseUri = $DoomBaseUri,
 
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$true)]
         [ValidateScript({$_ -gt 0})]
         [int]
         $Weapon
@@ -104,6 +104,36 @@ function Get-Player
     }
 }
 Export-ModuleMember -Function Get-Player
+
+function Get-Players
+{
+    Param(
+        [Parameter(Mandatory=$false)]
+        [System.Uri]
+        $BaseUri = $DoomBaseUri,
+
+        [Parameter(Mandatory=$false)]
+        [int]
+        $ID
+    )
+
+    if(($PSBoundParameters.keys).Contains('ID'))
+    {
+        $uri = New-Object System.Uri($BaseUri, "players/$($ID)")
+    }
+    else 
+    {
+        $uri = New-Object System.Uri($BaseUri, 'players')
+    }
+
+    $player = Invoke-WebRequest -Uri $uri -Method Get
+    
+    if($player.statuscode -like '2*')
+    {
+        return $player.content | ConvertFrom-Json
+    }
+}
+Export-ModuleMember -Function Get-Players
 
 function Update-Player
 {
@@ -229,3 +259,63 @@ function Get-World
     }
 }
 Export-ModuleMember -Function Get-World
+
+function Get-Doors
+{
+    Param(
+        [Parameter(Mandatory=$false)]
+        [System.Uri]
+        $BaseUri = $DoomBaseUri,
+
+        [Parameter(Mandatory=$false)]
+        [int]
+        $ID
+    )
+
+    if(($PSBoundParameters.keys).Contains('ID'))
+    {
+        $uri = New-Object System.Uri($BaseUri, "world/doors/$($ID)")
+    }
+    else 
+    {
+        $uri = New-Object System.Uri($BaseUri, 'world/doors')
+    }
+
+    $player = Invoke-WebRequest -Uri $uri -Method Get
+    
+    if($player.statuscode -like '2*')
+    {
+        return $player.content | ConvertFrom-Json
+    }
+}
+Export-ModuleMember -Function Get-Doors
+
+function Get-Objects
+{
+    Param(
+        [Parameter(Mandatory=$false)]
+        [System.Uri]
+        $BaseUri = $DoomBaseUri,
+
+        [Parameter(Mandatory=$false)]
+        [int]
+        $ID
+    )
+
+    if(($PSBoundParameters.keys).Contains('ID'))
+    {
+        $uri = New-Object System.Uri($BaseUri, "world/objects/$($ID)")
+    }
+    else 
+    {
+        $uri = New-Object System.Uri($BaseUri, 'world/objects')
+    }
+
+    $player = Invoke-WebRequest -Uri $uri -Method Get
+    
+    if($player.statuscode -like '2*')
+    {
+        return $player.content | ConvertFrom-Json
+    }
+}
+Export-ModuleMember -Function Get-Objects
