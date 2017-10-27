@@ -53,7 +53,7 @@ function Move-Player
 }
 Export-ModuleMember -Function move-player
 
-function Shoot-Weapon
+function Use-Weapon
 {
     Param 
     (
@@ -65,7 +65,7 @@ function Shoot-Weapon
     $uri = New-Object System.Uri($baseUri, 'player/actions')
     Invoke-WebRequest -Uri $uri -Method Post -Body '{"type":"shoot"}' -TimeoutSec $restTimeout
 }
-Export-ModuleMember -Function Shoot-Weapon 
+Export-ModuleMember -Function Use-Weapon 
 
 function Switch-Weapon 
 {
@@ -320,7 +320,7 @@ function Get-Objects
 }
 Export-ModuleMember -Function Get-Objects
 
-function Get-LineOfSight
+function Test-LineOfSight
 {
     Param(
         [Parameter(Mandatory=$false)]
@@ -340,4 +340,30 @@ function Get-LineOfSight
 
     return (Invoke-WebRequest -Uri $uri -Method Get | ConvertFrom-Json).los    
 }
-Export-ModuleMember -Function Get-LineOfSight
+Export-ModuleMember -Function Test-LineOfSight
+
+function Test-Move
+{
+    Param(
+        [Parameter(Mandatory=$false)]
+        [System.Uri]
+        $BaseUri = $DoomBaseUri,
+
+        [Parameter(Mandatory=$false)]
+        [int]
+        $ID = 0,
+
+        [Parameter(Mandatory=$true)]
+        [int]
+        $X,
+
+        [Parameter(Mandatory=$true)]
+        [int]
+        $Y
+    )
+
+    $uri = New-Object System.Uri($DoomBaseUri, "world/movetest?id=$($ID)&x=$($X)&y=$($Y)")
+    
+    return (Invoke-WebRequest -Uri $uri -Method Get | ConvertFrom-Json).result 
+}
+Export-ModuleMember -Function Test-Move
