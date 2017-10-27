@@ -319,3 +319,25 @@ function Get-Objects
     }
 }
 Export-ModuleMember -Function Get-Objects
+
+function Get-LineOfSight
+{
+    Param(
+        [Parameter(Mandatory=$false)]
+        [System.Uri]
+        $BaseUri = $DoomBaseUri,
+
+        [Parameter(Mandatory=$false)]
+        [int]
+        $ID1 = 0,
+
+        [Parameter(Mandatory=$true)]
+        [int]
+        $ID2
+    )
+
+    $uri = New-Object System.Uri($DoomBaseUri, "world/los/$($ID1)/$($ID2)")
+
+    return (Invoke-WebRequest -Uri $uri -Method Get | ConvertFrom-Json).los    
+}
+Export-ModuleMember -Function Get-LineOfSight
